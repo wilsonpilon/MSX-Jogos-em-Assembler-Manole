@@ -1,0 +1,11 @@
+PASS 1
+0 Fehler aufgetreten.
+PASS 2
+*0000                                   .Z80 
+*0000                            ; test
+*0000 $3E/$01                           LD A,1  ;test
+0 Fehler aufgetreten.
+
+Z80 
+*0000                            ; test
+*

@@ -1,0 +1,4 @@
+.z80
+; test
+ ld a,1 ;test
+

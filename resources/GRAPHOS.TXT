@@ -1,0 +1,585 @@
+GRAPHOS III - SISTEMA EDITOR DE VIDEO
+Versao 1.2 (C) Renato Degiovani - ATI Editora Ltda. 1987
+Versao 1.21a por Adriano C. R. Cunha - A&L Software 1997
+Manual revisado por Werner A. R. Kai - MSX Core Club 1997
+
+
+MANUAL DE OPERACAO
+
+     O GRAPHOS III e' um sistema desenvolvido para a linha MSX, com o  intuito 
+de facilitar a criacao e edicao de telas graficas.
+     Para ser executado o programa necessita da configuracao minima de um  mi-
+crocomputador MSX1 com 64 Kb de RAM e 16 Kb de VRAM, com gravador cassete e/ou 
+acionador de disco, ligado a uma TV ou monitor.
+     Os unicos perifericos aceitos e utilizados sao  o  joystick,  o  gravador 
+cassete, uma unica unidade de disco e a impressora. O programa nao reconhece u
+nidades de disco adicionais, mouse, paddle, caneta otica, mesa digitalizadora, 
+genlock e digitalizador de video.
+     Para melhor utilizacao e aproveitamento dos recursos oferecidos pelo pro-
+grama, recomenda-se a utilizacao do MSX ligado a uma TV colorida ou um monitor 
+colorido. A impressora deve estar conectada `a porta de saida  paralela padrao 
+Centronics do MSX, e deve possuir ou emular a impressao em modo grafico padrao 
+EPSON.
+     Infelizmente o programa nao possibilita a impressao a cores, mas as telas 
+arquivadas podem ser convertidas para o uso com outros programas  que  possuam 
+essa opcao.
+     Os arquivos de telas, alfabetos e shapes gerados pelo GRAPHOS  III  podem 
+ser utilizados com varios outros editores  graficos  e  programas  de  desktop 
+publishing.
+     O programa trabalha somente com a SCREEN 2 do MSX (resolucao de 256 x 192 
+pixels com 16 cores fixas).
+     A SCREEN 2 utiliza apenas um byte para guardar o estado de  8  pixels,  e 
+mais um byte para guardar a cor de frente e a cor de fundo  (entre  16  possi-
+veis) desses mesmos 8 pixels. Desta forma os pixels (bits) setados (1) sao  a-
+presentados com a cor de frente (INK) definida para eles, enquanto que os  de-
+mais (ressetados) sao apresentados com a cor de fundo (PAPER).
+     Os 8 bits pertencentes a um mesmo byte na memoria sao representados na te
+la como 8 pixels adjacentes na horizontal. Isso implica em que para cada 8 pon
+tos na direcao horizontal so' podemos ter duas cores mostradas: a cor de fren-
+te dos pixels setados e a cor de fundo dos pixels ressetados. A nao obediencia 
+a essa limitacao durante a edicao da tela causa  um  problema  conhecido  como 
+"borramento" das cores, que geralmente acarreta na diminuicao  das  qualidades 
+esteticas da mesma.
+     Essa e' uma limitacao de HARDWARE do MSX 1, nao tendo nada a  ver  com  o 
+programa. Note que:
+     - Dois grupos adjacentes de 8 pixels horizonais podem ter cores de frente 
+(INK) e de fundo (PAPER) diferentes, entao podemos ter quatro pixels  adjacen-
+tes com quatro cores diferentes exatamente na adjacencia desses dois grupos:
+
+     grupo A  grupo B
+     00000010 01000000
+
+     0=PAPERA 0=PAPERB
+     1=INK A  1=INK B
+
+     - Na direcao vertical nao existe essa limitacao, podendo os pixels de ca-
+da linha assumir quaisquer cores de frente e de fundo,  independentemente  das 
+cores dos pixels das linhas adjacentes.
+     Cabe ao usuario utilizar de sua habilidade e criatividade para superar es
+sa limitacao. Pela otima qualidade grafica de varias telas e programas do MSX,
+podemos perceber que isso e' perfeitamente possivel.
+
+1 - INSTALACAO
+
+     O GRAPHOS III deve ser carregado na memoria do MSX a partir do BASIC,  a-
+traves do comando:
+
+     RUN"GRAPHOS.BAS" + <RETURN>
+
+     Antes da execucao propriamente dita, o programa perguntara' sobre a modi- 
+ficacao de alguns parametros relativos `a configuracao especifica do MSX e dos
+perifericos em uso.
+     Responda as questoes objetivamente de acordo com o seu equipamento.
+     O GRAPHOS III e' totalmente carregado na memoria do MSX, assim o  usuario
+pode retirar o disco com o programa e colocar no acionador o disco com os  ar-
+quivos de trabalho, permanecendo com ele no acionador ate' o termino do traba-
+lho de edicao.
+
+2 - OPERACAO
+
+     O usuario opera o GRAPHOS III por meio de menus onde uma lista de  opcoes 
+e' mostrada.
+     Na primeira lista do menu temos o seu nome, e em seguida uma opcao por li
+nha, sendo que uma delas estara' em evidencia, destacada das  demais  por  uma
+tarja que causa sua impressao em modo inverso.
+     As TECLAS DO CURSOR mudam a posicao da tarja.
+     A tecla RETURN executa a opcao selecionada pela tarja.
+     A tecla ESC cancela a ultima opcao selecionada, retornando ao estado ime-
+diatamente anterior ao da opcao cancelada.
+     Em todos os modulos do programa:
+     As TECLAS DO CURSOR sao utilizadas para a movimentacao do cursor que esti
+ver na tela.
+     RETURN e' usada para executar uma operacao ou validar uma alteracao.
+     ESC e' usada para cancelar a ultima operacao realizada, voltando a um es-
+tado imediatamente anterior.
+     A unica indicacao sonora emitida pelo programa alem do click gerado auto-
+maticamente pelo MSX apos o pressionamento das teclas e' um BEEP durante a exe
+cucao de algumas operacoes, ao termino das operacoes de gravacao e leitura  de
+arquivos e no caso da ocorrencia de algum erro.
+
+3 - O MENU PRINCIPAL
+
+     O menu principal e' dividido em tres blocos. No bloco da esquerda (amare-
+lo) estao as opcoes principais. No bloco da direita (cinza) aparecem as opcoes 
+secundarias, relativas `a opcao principal selecionada, e,  no  bloco  inferior 
+(verde) aparecem as mensagens relativas `as operacoes executadas.
+     O GRAPHOS III usa a memoria como buffer onde e' armazenada a tela que es-
+ta' sendo editada, um alfabeto e um banco de shapes.
+
+     3.1 - DISPLAY TELA
+
+     Mostra a tela que esta' no buffer atraves da rotina de apresentacao sele-
+cionada pelo usuario.
+     O GRAPHOS III possui quatro rotinas diferentes que podem  ser  utilizadas 
+juntamente com a tela criada pelo usuario em seus programas.
+     Quando a tela esta' sendo mostrada, as outras rotinas de apresentacao po-
+dem ser acionadas pelo pressionamento da tecla correspondente (A a D).
+
+     3.2 - EDITA TELA
+
+     Permite visualizar e editar a tela que esta' no buffer.
+     O cursor pode assumir diferentes formas, ou ate mesmo desaparecer, depen-
+dendo da operacao que esta' sendo realizada. Ele possui uma sombra branca para 
+facilitar sua visualizacao em areas complexas da tela.
+     As teclas utilizadas sao:
+
+     TECLAS DO CURSOR / JOYSTICK - movem o cursor a uma velocidade constante.
+     SHIFT - pressionada durante a movimentacao do cursor, aumenta sua veloci-
+             dade de deslocamento.
+     CONTROL - pressionada durante a movimentacao do cursor, faz com que  este 
+               se mova `a taxa de um pixel por vez, emitindo um BEEP a cada mo
+               vimento.
+     TAB - posiciona o cursor no primeiro ponto do grupo que forma uma  matriz 
+           de 8x8 pixels, que corresponde `a uma posicao de linha e coluna  no 
+           sistema de coordenadas 24 x 32.
+     STOP - altera a cor da borda da tela.
+     CODE ou LGRA - altera a cor do cursor.
+     SELECT - mostra o menu de ATRIBUTOS, onde podemos  selecionar  a  cor  de
+              frente (INK) e a cor de fundo (PAPER).
+     GRAPH ou RGRA - muda a cor do cursor para a  cor  de  frente  selecionada 
+                     (INK).
+     HOME/CLS - recupera a ultima tela armazenada no buffer. Sempre que a exe-
+                cucao de uma operacao e' iniciada coma tecla RETURN, uma copia 
+                da tela e' transferida para o buffer. Com isso pode-se  retor-
+                nar ao estagio de desenho imediatamente anterior ao da  opera-
+                cao em andamento.
+     ESC - cancela a ultima opcao selecionada,retornando a um estado anterior.
+     RETURN - executa a operacao selecionada no menu, salvando uma copia da te
+              la no buffer. Termina a execucao da operacao, e, quando  nenhuma
+              operacao estiver sendo executada, retorna ao menu principal.
+     BARRA DE ESPACO - marca o ponto indicado pela posicao atual do cursor.
+     INSERT - funciona com as operacoes TRACO, BLOCO, SPRAY e todo o  menu  de 
+              TEXTO, determinando que os pixels alterados deverao ser  setados
+              (preenchidos).
+     DELETE - funciona com as operacoes TRACO, BLOCO, SPRAY e todo o  menu  de
+              TEXTO, determinando que os pixels alterados deverao ser resseta-
+              dos (apagados).
+     F1 - menu DESENHO.
+     F2 - menu TEXTO.
+     F3 - menu TELA.
+     F4 - menu AJUSTE.
+     F5 - menu MISCELANEA.
+
+     3.2.1 - Menu DESENHO (F1)
+
+     Permite a execucao de diversas operacoes graficas na tela.  Os  atributos 
+de todas as posicoes alteradas da tela recebem o valor da cor de frente  (INK) 
+selecionada, com excecao da operacao PINTURA, que modifica somente  a  cor  de 
+fundo (PAPER) da posicao indicada pelo cursor.
+
+     TRACO - esta operacao permite a manipulacao de cada um dos pixels da tela 
+             de maneira individual, setando (INS) ou ressetando (DEL) o  ponto 
+             indicado pelo cursor quando e pressionada a BARRA DE ESPACO.
+     BLOCO - esta operacao e' semelhante a operacao TRACO, com a diferenca  de 
+             que o usuario pode ajustar a altura e a largura do cursor para al
+             terar varios pixels de uma so' vez.
+     LINHA - esta operacao traca segmentos de reta encadeados. O usuario  deve 
+             marcar as posicoes do ponto inicial e do ponto  final  da  linha, 
+             apos o que a linha e' desenhada e o ponto final passa automatica-
+             mente a ser o ponto inicial para o proximo segmento.
+     RETANGULO - esta operacao traca um retangulo. O usuario deve marcar a po-
+                 sicao de um dos vertices do retangulo, que permanecera'  fixo 
+                 e sera usado como referencia. Em seguida deve marcar a  posi-
+                 cao do vertice oposto do retangulo.Para cada ponto marcado e'
+                 desenhado um novo retangulo.
+     RAIO - esta operacao traca segmentos de reta de um ponto fixo a outros. O 
+            usuario deve marcar a posicao inicial dos segmentos, que permanece
+            ra fixa, sendo usada como referencia. Em seguida deve marcar a po-
+            sicao final, apos o que a linha e' desenhada. Para cada ponto mar-
+            cado e' desenhada uma nova linha.
+     CIRCULO - esta operacao desenha um circulo. O usuario deve marcar a posi-
+               cao do centro do circulo que permanecera' fixa e sera' usada co
+               mo referencia. Em seguida deve marcar o ponto por onde o circu-
+               lo deve passar. Para cada ponto marcado e'  desenhado  um  novo
+               circulo.
+     PINTURA - esta operacao altera a cor de fundo dos pontos  indicados  pelo 
+               cursor para a cor de fundo selecionada (PAPER)  sem  alterar  a
+               cor de frente do desenho.
+     SPRAY - esta operacao imita o resultado de uma pintura com spray.O padrao 
+             gerado e' aleatorio e tende a formar um borrao compacto caso  nao
+             haja deslocamento do cursor.
+     FILL - preenche a area da tela em que esta' localizado o  ponto  indicado
+            pelo cursor, setando todos os seus pixels.
+
+     3.2.2 - Menu TEXTO (F2)
+
+     Permite escrever na tela com o alfabeto que esta' no buffer. Aqui' o cur-
+sor assume a forma de uma janela dentro da qual sao impressos os caracteres di
+gitados.
+     O alfabeto pode ser impresso na tela com algumas variacoes:
+
+     NORMAL - imprime o caracter exatamente da forma como ele e'  definido  na 
+              matriz de caracteres, sem alteracoes.
+     ITALIC - imprime o caracter com uma ligeira inclinacao para a direita. Es
+              te recurso deve ser utilizado com cuidado, pois determinados ti-
+              pos de letras nao produzem resultados legiveis.
+     BOLD - imprime o caracter duas vezes com um deslocamento linear de um pi-
+            xel entre as duas impressoes, dando um efeito de reforco.
+     DUPLO - imprime o caracter com dupla altura.
+     DUPLO BOLD - imprime o caracter com dupla altura e dupla largura.
+     LARGO - imprime o caracter com dupla largura.
+
+     3.2.3 - Menu TELA (F3)
+
+     Permite a execucao de varias operacoes adicionais que manipulam a tela co
+mo um todo.
+
+     SALVA TELA - esta operacao salva a tela no buffer.
+     INVERTE VIDEO - esta operacao inverte o estado dos pixels da tela, sem al
+                     terar os atributos.
+     INVERTE ATRIBUTOS - esta operacao troca a cor de frente (INK) e de  fundo 
+                         (PAPER) de todos os bytes da  tela,  sem  alterar  os
+                         pixels.
+     RETIRA VIDEO - esta operacao resseta (apaga) todos os pixels da tela.
+     RETIRA ATRIBUTOS - esta operacao retira as cores de frente (INK) e de fun
+                        do (PAPER) da tela, deixando `a vista somente  os  pi-
+                        xels setados.
+     REPOE VIDEO - esta operacao repoe os pixels setados na  tela,  ressetados 
+                   pela operacao RETIRA VIDEO.
+     REPOE ATRIBUTOS - esta operacao repoe as cores na tela, retiradas pela o-
+                       peracao RETIRA ATRIBUTOS.
+     LIMPA TELA - esta operacao apaga toda a tela, deixando uma tela vazia com 
+                  as cores selecionadas no menu de ATRIBUTOS.
+     IMPRIME TELA - esta operacao envia uma copia do video (pixels setados) pa
+                    ra a impressora conectada ao MSX, que ja deve estar  liga-
+                    da, com o papel posicionado  e  pronta  para  a  impressao 
+                    (READY).
+
+     3.2.4 - Menu AJUSTE (F4)
+
+     Permite um posicionamento adequado da tela em edicao. O cursor desaparece 
+e o deslocamento da tela em todas as operacoes e' controlado pelas  TECLAS  DO 
+CURSOR.
+
+     SCROLL - esta operacao desloca somente o video em um pixel por vez. A par
+              te que sai da tela e' perdida.
+     SCROLL 8x8 - esta operacao desloca o video e os atributos em 8 pixels por 
+                  vez. A parte que sai da tela e' perdida e o espaco vazio que 
+                  fica na tela e' preenchido com os atributos selecionados.
+     ROTACAO - esta operacao desloca somente o video em um pixel por vez.A par
+               te que sai da tela entra novamente pelo lado oposto.
+     ROTACAO 8x8 - esta operacao desloca o video e os atributos  em  8  pixels
+                   por vez. A parte que sai da tela entra novamente pelo  lado
+                   oposto.
+
+     3.2.5 - Menu MISCELANEA (F5)
+
+     Permite a utilizacao de ferramentas avancadas para a edicao da tela.
+
+     ZOOM - esta opcao permite ao usuario selecionar uma parte da tela para em 
+            seguida edita-la em modo ampliado.
+            O quadro maior e' a tela de edicao, que mostra a ampliacao dos pi-
+            xels da parte selecionada da tela. O quadro na parte inferior  es-
+            querda representa a tela, enquanto que o quadro menor dentro  dele 
+            representa a parte selecionada.
+            O quadro chamado TELA mostra a parte selecionada da maneira  exata 
+            em que ela aparece na tela,enquanto que o quadro INK mostra apenas 
+            suas cores de frente e o quadro PAPER mostra apenas suas cores  de 
+            fundo.
+            Durante a selecao, o usuario escolhe a parte da tela que deseja e-
+            ditar com as TECLAS DO CURSOR, usando a tecla SELECT para  atuali-
+            zar o desenho mostrado na janela de edicao. A tecla ESC sai da ope
+            racao de ZOOM,validando as alteracoes realizadas durante a edicao, 
+            e a tecla RETURN entra no modo de edicao.
+            Na edicao, um cursor aparece na parte selecionada, e tambem as le-
+            tras A,S e R na parte superior direita da tela, que sao  acionadas
+            pelas teclas HOME/CLS, INSERT e DELETE respectivamente. A letra  A 
+            indica que o estado do pixel sob o cursor sera' alternado (inverti
+            do), a letra S indica que o pixel sera' setado e a letra R  indica
+            que o pixel sera' ressetado quando a BARRA DE ESPACO for pressiona
+            da.
+            Durante a edicao, a tecla SELECT permite a selecao de novos atribu
+            tos INK e PAPER. Essa selecao tem uma opcao a mais,indicada por um
+            ponto, que, quando selecionado, permite a alteracao do estado  dos 
+            pixels sem modificacao em seus atributos. As cores  referentes  ao
+            pixel sob o cursor na tela de edicao sao mostradas acima das pala-
+            vras INK e PAPER.
+
+     SHAPE - esta opcao permite que um dos shapes do banco contido  no  buffer 
+             seja carimbado na tela. Se o buffer estiver vazio, nada acontece-
+             ra.
+             O primeiro shape do banco e' mostrado e o usuario deve selecionar 
+             o shape que deseja utilizar com as TECLAS DO CURSOR e  apertar  a 
+             tecla RETURN. Entao o shape pode ser movido pela tela com as  TE-
+             CLAS DO CURSOR e carimbado com a tecla RETURN.
+             Se o shape for do TIPO 1,embora os atributos nao sejam alterados, 
+             o usuario pode determinar o tipo de operacao logica ocorrida  en-
+             tre os pixels do shape e da parte da tela sobre a qual ele  esta' 
+             posicionado, atraves da tecla SELECT. As operacoes sao:
+             - MASCARA - o shape se sobrepoe `a tela, apagando  que  esta  por 
+                         baixo.
+             - AND - so' sao impressos os pixels setados do shape que  estive-
+                     rem sobre pixels setados da tela (interseccao).
+             - OR - os pixels do shape e da tela sao mixados (transparencia).
+             - XOR - so' sao impressos os pixels setados do shape que  estive-
+                     rem sobre pixels ressetados da tela (mixagem com inversao 
+                     nas interseccoes).
+
+     CORTE - essa opcao permite que o usuario manipule e modifique  os  pixels 
+             de uma determinada parte da tela, que chamaremos de corte.
+             O usuario deve marcar primeiro o vertice superior esquerdo e  de-
+             pois o vertice inferior direito da area a ser cortada, com as TE-
+             CLAS DO CURSOR e a BARRA DE ESPACO. O corte fica destacado por u-
+             ma linha tracejada.
+             - TECLAS DO CURSOR - deslocam o corte.
+             - I - inverte o estado dos pixels do corte.
+             - E - espelha o corte na direcao horizontal.
+             - R - espelha o corte na direcao vertical.
+
+     GRID - essa opcao altera a cor de fundo (PAPER) de toda a  tela,  criando 
+            uma malha quadriculada branca e cinza que mostra as matrizes natu-
+            rais de 8x8 pixels que compoem um caracter no sistema de coordena-
+            das 24x32. Cada grupo de 8 pixels na horizontal corresponde  a  um 
+            byte na memoria,que so' pode ter uma cor de frente (INK) e uma cor
+            de fundo (PAPER).
+
+     3.3 - ARQUIVA TELA
+
+     Permite que a tela existente no buffer seja arquivada em fita ou disco. O 
+usuario pode escolher um dos quatro seguintes formatos:
+
+     DISPLAY - Neste formato a tela e a rotina de DISPLAY selecionada sao gra-
+               vadas como um arquivo binario (BSAVE) cuja extensao e' "SCR", a 
+               partir do endereco &H9200.
+               Este formato permite a utilizacao direta da tela em um programa 
+               BASIC qualquer, bastando que esta seja executada em SCREEN2.
+               Exemplo:
+
+               10 SCREEN 2
+               20 BLOAD "nome.SCR",R
+               30 GOTO 30
+
+     LAYOUT - Neste formato apenas a parte do video (sem os atributos) e' gra-
+              vada de maneira compactada num arquivo binario de extensao "LAY" 
+              cujo endereco inicial e' &H9200.
+
+     COMPAC - Neste formato tanto o video quanto os atributos sao gravados se-
+              paradamente, em arquivos binarios de extensao "VTC" e "ATC" res-
+              pectivamente, comecando em &H9200.
+
+     Os arquivos de formato LAYOUT e COMPAC nao possuem tamanho fixo, pois is-
+so depende da eficiencia da compactacao RLE, que varia de uma tela para a  ou-
+tra. Se a tela for muito complexa e o resultado da compactacao for inviavel  a 
+gravacao nao sera' executada e o usuario sera' avisado.
+
+     EDITOR - Neste formato a tela e' gravada no padrao utilizado pelo SISTEMA 
+              EDITOR DE ADVENTURES.
+
+     3.4 - RECUPERA TELA
+
+     Permite que uma tela arquivada em fita ou disco seja carregada no buffer. 
+Os formatos permitidos sao os mesmos gerados pela opcao ARQUIVA TELA.
+     O formato especial SPECTR permite que uma tela gravada em fita por um  e-
+quipamento Sinclair ZX Spectrum (TK90X e TK95) seja convertida para  o  padrao
+MSX. A conversao e' executada somente apos o termino do carregamento  completo
+da tela e, se por algum motivo, for interrompida (ESC), restara'  apenas  lixo 
+no buffer de tela.
+
+     3.5 - EDITA ALFABETO
+
+     Permite que o alfabeto em uso (no buffer) seja editado. A tela e' dividi-
+da em quatro quadros. O quadro no canto superior direito contem a imagem de to
+dos os caracteres do alfabeto em questao.
+     No quadro superior esquerdo e' mostrada uma ampliacao do caracter indica-
+do pelo cursor. Na parte de baixo existem duas pranchetas, chamadas P1 e P2.
+     A tecla SELECT oferece 4 opcoes ao usuario:
+     CLEAR P2 - limpa a prancheta P2.
+     EDITA P2 - permite que se organize na prancheta P2 um grupo  de  caracte-
+                res. Esta opcao e' util para facilitar a visualizacao dos  ca-
+                racteres redefinidos e tambem para montar um esboco de um dese
+                nho formado por varios carateres em sua forma correta.
+     CLEAR FONTE - copia as imagens dos caracteres da ROM do MSX para o buffer
+     EDITA P1 - permite que a prancheta P1 funcione como uma janela da tela em 
+                edicao para que um desenho nela contido possa ser copiado dire
+                tamente para o caracter selecionado pelo cursor, redefinido-o.
+     A tecla RETURN permite que se edite o caracter indicado pelo cursor. Nes-
+ta circunstancia a edicao passara' a ser feita no quadro ampliado, e  a  barra 
+de espaco produzira' a alternancia do estado do pixel sob o  cursor.  A  tecla
+SELECT entao da acesso `a 5 novas opcoes:
+     CLEAR - limpa (apaga) o caracter.
+     INVERTE - inverte os pixels do caracter.
+     ESPELHO - espelha o caracter na direcao horizontal.
+     ROTACAO - gira o caracter em 90 graus.
+     EDITA P1 - permite que o desenho do caracter seja  copiado  a  partir  da 
+                prancheta P1 (tela no buffer).
+
+     3.6 - ARQUIVA ALFABETO
+
+     Permite que o alfabeto existente no buffer seja arquivado em fita ou dis-
+co. O usuario pode escolher um dos seguintes formatos:
+
+     COMUM - o alfabeto e' gravado como um arquivo binario (BSAVE) de extensao 
+             "ALF" com tamanho de 2048 bytes (2 Kbytes) comecando no  endereco 
+             &H9200.
+     EDITOR - o alfabeto e' gravado no padrao utilizado pelo SISTEMA EDITOR DE 
+              ADVENTURES.
+
+     3.7 - RECUPERA ALFABETO
+
+     Permite que um alfabeto arquivado em fita  ou  disco  seja  carregado  no 
+buffer. Os formatos permitidos sao os mesmos gerados pela opcao ARQUIVA ALFABE
+TO.
+
+     3.8 - CRIA SHAPES
+
+     Os shapes sao figuras formadas por partes da tela grafica que  podem  ser 
+manipuladas independentemente, sendo a sua utilidade mais comum o carimbamento 
+em diferentes partes da tela.
+     Os shapes criados vao sendo armazenados em sequencia no buffer,  formando
+um banco de tamanho limitado apenas pela memoria.
+     Podem ser criados quatro diferentes tipos de shapes:
+
+     TIPO 1 - e' formado apenas pelos pixels sem atributos, ficando com as co-
+              res do local onde for carimbado na  tela.  A  principio  nao  e' 
+              transparente, mas suas propriedades podem ser alteradas mediante
+              o pressionamento da tecla SELECT no momento de sua utilizacao.
+     TIPO 2 - e' um shape colorido e nao transparente, ou seja,e' uma parte da 
+              tela que pode ser somente copiada sobre outras, sem sofrer alte-
+              racoes.
+     TIPO 3 - e' formado pelos pixels e por uma mascara, cujos pixels  definem
+              onde o shape sera transparente. Este tipo nao possui  atributos,
+              ficando com as cores do local onde for carimbado na tela.
+              A mascara e' util para a obtencao de certo efeitos visuais  como
+              contorno ou a ilusao de que o shape esta num plano diferente  do 
+              fundo da tela (FILMATION II).
+     TIPO 4 - e' um shape semelhante ao tipo 3, mas colorido.
+
+     Apos a selecao do tipo de shape a ser criado, o usuario deve  definir  os 
+limites do shape, que e' exatamente o mesmo procedimento utilizado  na  funcao 
+CORTE do menu F5:MISCELANEA do modulo EDITA TELA.
+     Se o shape criado for do tipo 3 ou 4, o usuario deve tambem editar a mas-
+cara de impressao dos pixels do shape. Para isso, apos a definicao do shape  a 
+mascara e' mostrada na parte superior esquerda, e o bloco indicado em azul  e' 
+ampliado na parte inferior da tela, com um cursor para a edicao individual dos 
+pixels. Do lado esquerdo da ampliacao temos somente o bloco que esta' sendo e-
+ditado, em tamanho natural.
+     As TECLAS DO CURSOR permitem a movimentacao pelos pixels e automaticamen-
+te, pela mascara; a BARRA DE ESPACO alterna o estado do pixel  sob  o  cursor, 
+ESC retorna ao estagio de definicao do SHAPE e RETURN finaliza a edicao.
+     Inicialmente a mascara e' identica ao shape invertido. A mascara  realiza 
+uma operacao AND com os pixels da area da tela sobre a qual esta'  posicionado 
+o shape, ou seja, os pixels da tela sob os pixels setados da mascara nao se al
+teram, e os pixels da tela sob os pixels ressetados da mascara  sao  apagados. 
+Entao uma operacao OR (mixagem) e' realizada com os pixels do shape, e o resul
+tado final e' o que e' impresso na tela. Se o shape for do tipo 3, os  atribu-
+tos da tela sao mantidos, e se o shape for do tipo 4, as cores do shape sao co
+piadas para a area da tela onde este e' carimbado.
+     Se nenhuma alteracao for realizada na mascara, o shape do  tipo  3  acaba 
+sendo equivalente ao shape do tipo 1 com operacao OR. Se todos  os  pixels  da 
+mascara forem apagados (ressetados), o shape do tipo 3 acaba sendo equivalente 
+ao shape do tipo 1 com operacao MASCARA, e o shape do tipo 4 acaba sendo equi-
+valente ao shape do tipo 2.
+
+     CLEAR - limpa o buffer de shapes. E' conveniente sempre limpar  o  buffer 
+             antes de criar o primeiro shape de um novo banco.
+
+     3.9 - ARQUIVA SHAPES
+
+     Permite o arquivamento do banco de shapes existente no buffer em fita  ou 
+disco. O arquivo e' gerado com a extensao  "SHP"  num  formato  especifico  do 
+GRAPHOS III.
+
+     3.10 - RECUPERA SHAPES
+
+     Permite que um banco de shapes arquivado em fita ou disco seja  carregado 
+no buffer. O arquivo deve estar no formato gerado pela opcao ARQUIVA SHAPES.
+
+     3.11 - DIRETORIO
+
+     Mostra o nome dos arquivos especificos que estao no disco em uso.  Obvia-
+mente essa opcao so' esta disponivel para equipamentos com drive.
+
+     3.12 - VERSAO DO SISTEMA
+
+     Mostra os creditos e a versao corrente do sistema.
+
+     3.13 - BASIC
+
+     Retorna ao MSX-BASIC. O usuario dispoe de uma area de aproximadamente 1Kb 
+para seu uso. As seguintes teclas de funcao podem ser usadas:
+
+     F1 - retorna ao GRAPHOS III.
+     F2 - salva a tela atual no buffer.
+     F3 - mostra a tela que esta no buffer.
+
+4 - MENSAGENS DE ERRO
+
+     - ARQUIVO NAO EXISTE
+     Apos a leitura do diretorio do disco,  o  usuario  trocou  o  disco  e  o 
+     GRAPHOS tentou abrir um arquivo que nao existe no disco que foi  colocado 
+     no acionador.
+     - BREAK
+     Uma operacao de leitura/escrita em fita cassete foi interrompida pelo usu
+     ario.
+     - BUFFER VAZIO
+     O usuario tentou arquivar o banco de shapes, estando o buffer  de  shapes 
+     vazio.
+     - COMPACTACAO IMPROPRIA
+     A compactacao da tela e' inviavel.
+     - DIRETORIO CHEIO
+     O diretorio do disco esta' cheio e nao permite a criacao de um novo arqui
+     vo.
+     - ERRO DE DISCO
+     O drive esta' aberto, ou ele ou o disco estao com problemas.
+     - ERRO DE ESCRITA
+     Ocorreu um erro durante a gravacao de um arquivo em disco.
+     - ERRO DE I/O
+     Ocorreu um erro durante uma operacao de leitura em fita cassete.
+     - ERRO DE LEITURA
+     Ocorreu um erro durante a leitura de um arquivo em disco.
+     - NAO EXISTEM ARQUIVOS
+     Nao foi encontrado no diretorio do disco nenhum arquivo do tipo seleciona
+     do para o carregamento.
+     - SHAPE MUITO GRANDE
+     Nao ha' memoria suficiente no buffer para armazenar um shape  do  tamanho 
+     que o usuario esta' tentando criar.
+
+5 - MODIFICACOES DA VERSAO 1.21a
+
+     As modificacoes feitas no Graphos III pela A&L Software sao as seguintes:
+
+     - UTILIZACAO DE QUALQUER TIPO DE DISCO
+       Ate' a versao 1.2 o Graphos III so' aceitava discos de 180kb ou  360kb.
+       A versao 1.21a aceita discos de 720kb, 5 1/4" ou 3 1/2" e, ate'  mesmo,
+       HD.
+
+     - COMPATIBILIZACAO COM O PADRAO MSX
+       A versao 1.21a reconhece VDPs com qualquer porta de leitura e  escrita,
+       seja MSX1, MSX2, MSX2+ ou MSX Turbo R. Ate' a versao 1.2 o Graphos  III 
+       so' aceitava VDPs que se utilizassem das portas 98h e 99h.
+       A versao 1.21a, ao contrario das anteriores, reconhece e  nao  conflita
+       com maquinas MSX que possuem RAM em slot secundario.
+       Outros problemas de incompatibilidade com o padrao tambem foram sanados
+       na versao 1.21a.
+     
+     - ROTINAS DE ERRO
+       A versao 1.21a lida com erros de disco e drive, gerando uma mensagem na 
+       tela, e nao retornando ao BASIC como na versao 1.2.
+
+     - ROTINAS ALTERNATIVAS DE IMPRESSAO
+       O Graphos III tambem pode ser executado atraves do outro programa BASIC
+       "GRAPHOS.ASC", que permite 8 diferentes modos de impressao de  tela  em 
+       impressoras padrao EPSON. A rotina original foi  publicada  na  revista
+       Micro Sistemas (infelizmente o autor e o numero da revista sao desconhe
+       cidos).
+       O programa BASIC "GRAPHOS.BAS" tambem possui uma rotina alternativa  de
+       impressao, igualmente publicada na revista Micro Sistemas (novamente, o 
+       autor e o numero da revista sao desconhecidos).
+
+6 - CREDITOS
+
+     O Sistema Editor de Video Graphos III e' de autoria de Renato  Degiovani.
+Sua ultima versao, 1.2, data de 1987.
+     A versao 1.21a e' de autoria da A&L Software e data de 1997. As modifica-
+coes e melhorias foram feitas sob licenca do autor.
+     A digitacao e revisao do manual sao trabalho de Werner A. R. Kai, do  MSX
+Core Club, em 1997.
+     A A&L Software gostaria de agradecer a Werner Kai pelos bugs e  sugestoes
+apresentados e a Renato Degiovani pelas informacoes e permissao de modificacao
+do programa.
+     Contatos pela Internet podem ser feitos atraves dos seguintes enderecos:
+
+     Renato Degiovani [Prokit Informatica]:http://www.tilt.net
+     Adriano Cunha    [A&L Software]      :http://www.dcc.unicamp.br/~adrcunha
+     Werner Kai       [MSX Core Club]     :wark@base.com.br
+

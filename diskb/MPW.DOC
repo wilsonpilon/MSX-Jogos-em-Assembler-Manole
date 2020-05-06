@@ -1,0 +1,742 @@
+		MAC PROGRAM WRITER Version 1.20, 1991-93
+
+
+	*******************************************************************
+	HI THERE, MSX LOVERS!!!
+
+	I don't know English, I speak a little bit of  "Brazilian-English",
+	so, there must be a lot of mistakes in the text bellow, but I  hope
+	it may help someone.
+
+	THIS  PROGRAM  IS  PUBLIC  DOMAIN,  it  can  be  freely  used  and
+	distributed  for  non-comercial  purposes.
+
+	If you have any suggestions, any useful routine or trick, or even
+	if you want to play TIC-TAC-TOE by mail. Write to:
+
+	Caixa Postal 79841, Coelho da Rocha - S±o Jo±o de Meriti
+	CEP 25550-970, Rio de Janeiro - Brazil - A/C. TECNOBYTES INF.
+
+	*******************************************************************
+
+
+	The MPW is a  program  based  in years  of  coding  experience  and
+"hacking"; and it was developed with the aim of being  a  powerful  editing
+tool for programs or even for normal text maintenance. The most  emphasized
+features during MPW development were:
+
+	- Its speed;
+	- Its display;
+	- Its editing capacity;
+	- Its unique functions and so on...
+
+	The MPW has 3 files: MPW.COM, the code itself - MPW.DOC,  the  text
+you're reading - and its config file MPW.INF. The last one has informations
+about the options selected in preferences window, if it is not  present  on
+disk, the default options will be used. 
+
+
+	-- The Display --
+
+	MPW's display looks like PC SideKick.
+
+	The VDP works in text mode 2 (screen 0 / 80 columns), the image  is
+vertically extended by the LN bit on vdp register 9, there are 4  different
+colors out of 512, for foreground, background, border, and title.
+
+	The screen's first line is the title line (or status line), and  it
+appears with its own color, notice that the title line's  foreground  color
+is the same as border color.  The  title  line  shows  the  most  important
+informations about the text being  edited,  that  are:  the  filename,  the
+cursor line, the column, the indent mode (activated or  not),  the  writing
+mode (insert or overwrite), and the Caps Lock state.
+
+** Note **  The title line is also used to show the available  memory  (^K,
+	    ^Q, ^O) and another program messages.
+
+	In the screen last line, we can see the definitions  given  to  the
+function keys in the MPW, the rest of lines are used by  the  edit  window.
+Notice that, when split mode becomes active the screen is divided to  allow
+the simultaneous view of both texts.
+
+
+	-- The Available Memory --
+
+	The program uses all drives available to system, including those in
+RAM, so, the more drives  you  have  less  available  memory  there'll  be.
+Remember that, during RESET you can press Ctrl to disable logical drives or
+Delete to disable the MEGA RAM-DISK, releasing more memory to your text.
+
+	The MPW uses all available area for ".COM" programs minus the stack
+area and the resident modules area. The currently available memory  can  be
+seen in the title line when we use a command prefix (^K, ^Q and ^O).
+
+	Notice that, the available memory is  always  major  than  what  is
+seen, due to internal conversions that are made when the  files  are  read,
+and made again when files are written back to disk.
+
+
+	-- The Commands --
+
+	The MPW commands follow the WordStar / SideKick standard  and  they
+are single keys, or combinations of 2 or more keys. The symbol  ^  or  Ctrl
+denotes the use of <CONTROL>, any definition between < > refers to a key.
+
+** Examples **	Ctrl-F	 = <CONTROL> + <F>;
+		Ctrl-K-B = <CONTROL> + <K>, <B>;
+		Return   = <RETURN>, <ENTER> or <CR>
+
+
+	-- Cursor Movement Commands --
+
+Left arrow		or Ctrl-S	Move to left
+Right arrow		or Ctrl-D	Move to right
+Up arrow		or Ctrl-E	Move to previous line
+Down arrow		or Ctrl-X	Move to next line
+Ctrl-Left arrow		or Ctrl-A	Move to previous word
+Ctrl-Right arrow	or Ctrl-F	Move to next word
+Ctrl-Up arrow		or Ctrl-R	Move to previous page (PG UP)
+Ctrl-Down arrow		or Ctrl-C	Move to next page (PG DOWN)
+Home			or Ctrl-Q-S	Go to beginning of line
+Shift-Home		or Ctrl-Q-E	Go to beginning of page
+Ctrl-Home		or Ctrl-Q-R	Go to beginning of text
+Ctrl-Q-B				Go to beginning of block
+Select			or Ctrl-Q-D	Go to end of line
+Shift-Select		or Ctrl-Q-X	Go to end of page
+Ctrl-Select		or Ctrl-Q-C	Go to end of text
+Ctrl-Q-K				Go to end of block
+Ctrl-W					Scroll down
+Ctrl-Z					Scroll up
+Ctrl-B					Auto Ctrl-Z
+Ctrl-U					Auto Ctrl-W
+
+
+	-- The Clipboard --
+
+	The clipboard is a special buffer for  text  handling, that  is,  a
+memory area for draft. With it, we can duplicate /  move  lines  or  blocks
+even to another text.
+
+	With Shift-Ins we can copy the clipboard into text, notice that the
+text is inserted in cursor position and that we can  use  this  combination
+several times; in several points of text to  duplicate  the  same  part  of
+text.
+
+	There are situations in which the line or block that we're handling
+is copied into clipboard, it happens in the following situations:
+
+	- When we kill a line with Ctrl-Y, it is copied into clipboard, so,
+	  we can move or duplicate lines;
+
+	- When we kill a block with Ctrl-K-Y, it is copied into  clipboard,
+	  so, we can retrive it after its erasing;
+
+	- When we move a block with Ctrl-K-V;
+
+	- And finally, when we mark a block with Ctrl-K-B and Ctrl-K-K, so,
+	  we can use the clipboard (rather than Ctrl-K-C) to copy the block
+	  even to another text. (e.g.: the 2nd window)
+
+
+** Examples **	Suppose you have the text bellow:
+
+1	;-------- Video Variables --------
+2	&interlace:	db #ff
+3	&ntsc_pal:	db 0
+4	&key_click:	db #ff
+5	&video_adjust:	db 0
+6	&text_color:	dw %000000000		;black		0,0,0
+7	&paper_color:	dw %111111111		;white		7,7,7
+8	&border_color:	dw %001001111		;dark blue	1,1,7
+9	&title_color:	dw %101101101		;gray		5,5,5
+
+* Erasing the line 7 with Ctrl-Y; and using Shift-Ins 3 times in  the  same
+  position, will do 3 copies of line 7.
+
+* Erasing the line 5 with Ctrl-Y; moving the cursor  to  the  beginning  of
+  line 3 and using Shift-Ins; will move line 5 between lines 2 and 3!!
+
+
+	-- The Blocks --
+
+	A block is a defined area of text, it  is  indicated  with  inverse
+characters, the blocks are used in  several  editing  operations  such  as:
+copy, move, kill, and so on... All  block  commands  are  preceded  by  the
+Ctrl-K prefix.
+
+	To mark a block we should define its beginning and end,  to  define
+its beginning we use Ctrl-K-B, that is,  we  move  the  cursor  to  desired
+position and type Ctrl-K-B; to define its end we use Ctrl-K-K. Notice  that
+for obvious reasons the end must be defined AFTER beginning.
+
+	Using Ctrl-K-H we can make the block visible or invisible, however,
+in both cases the block stills defined. Notice that when we insert or  when
+we delete characters inside the block, it  can  increase  or  decrease  its
+length or even disappear if we delete all its contents.
+
+	Keep in mind: When a block is defined it is copied into clipboard!!
+
+
+** Note **  To do any operation described bellow, you need to have a  block
+	    defined in the text.
+
+
+	-- Finding the Block in the Text --
+
+	To find a block defined in  the  text,  we  can  use  Ctrl-Q-B  and
+Ctrl-Q-K to go to its beginning or its end; we can  also  use  Ctrl-K-H  to
+make the block visible / invisible.
+
+
+	-- Duplicating, Moving, Erasing and Printing Blocks --
+
+	To erase a block we use Ctrl-K-Y, notice that the block  is  copied
+into clipboard to allow a subsequent retrieval; to print  a  block  we  use
+Ctrl-K-P, the printing can be interrupted with Ctrl-Stop.
+
+** Note **  The printing routine doesn't work very well, so, don't rely  on
+	    it!! (you better use MSX-DOS to print files)
+
+	To copy or to move a block we use  Ctrl-K-C  and  Ctrl-K-V,  notice
+that we can't copy or move a block to anywhere inside itself. The diference
+between copy and move is that to copy means to duplicate the block contents
+in another position, while to move means that the block will  be  moved  to
+another position. Notice that, copy and move commands always put the  block
+at the beginning of cursor line. (if you don't want this effect, you better
+use clipboard).
+
+
+** Notes **  A beep sound during MPW  operation  means  that  there  wasn't
+	     enough memory to do the desired operation;  (It  is  gonna  be
+	     improved soon);
+
+	     If we use Ctrl-K-P, and there's no block defined then all text
+	     will be printed;
+
+	     The Ctrl-K-V uses the clipboard as  a  temporary  buffer,  so,
+	     you can't move blocks with more than  16K. In  this  case  you
+	     should use the disk as buffer. (See Ctrl-K-W and Ctrl-K-R).
+
+
+	-- Copying Blocks From a Text to Another --
+
+	The blocks, when they're defined, are copied into clipboard; notice
+that, the Ctrl-Y also uses the clipboard, so, if it is used after  a  block
+definition the block won't be present in the  clipboard  anymore.  In  this
+case you should redefine the block (only the beginning or the end).
+
+	After  the  block  has  been  defined  (and  has  been  copied   to
+clipboard), we just need to move the cursor to the  desired  text,  in  the
+desired position and then use Shift-Ins. Notice that, we can copy the block
+several times in the text, and that we can use the clipboard,  rather  than
+Ctrl-K-C, to copy the block to the same text.
+
+
+	-- Changing Block Case --
+
+	A special resource very useful for code editing, present in the MPW
+are the block-change-case commands. We can mark a big  block,  a  line,  or
+just a word; and then use  Ctrl-K-E  to  change  the  block  to  UPPERCASE,
+Ctrl-K-L to change the block to lowercase, and  finally  Ctrl-K-F  to  flip
+the block, that is, what is uppercase will be lowercase and vice versa.
+
+
+	-- Reading and Writing Blocks --
+
+	Another very useful resource are the  block  reading  and   writing
+commands. To read a block we use Ctrl-K-R, and then we choose a  file  (see
+reading files), the block read from disk will be  inserted  in  the  cursor
+position and will be defined as a block, that is, will be highlighted.
+
+	To write a block to disk, we use Ctrl-K-W and then we choose a file
+(see writing files), notice that, there must be a block defined.
+
+
+** The following is list of the block handling commands **
+
+Ctrl-K-B		Mark block beginning
+Ctrl-K-K		Mark block end
+Ctrl-K-H		Show / Hide the block
+Ctrl-K-C		Duplicate the block
+Ctrl-K-V		Move the block
+Ctrl-K-Y		Kill (erase) the block
+Ctrl-K-P		Print the block
+Ctrl-K-I		Indent the block (insert spaces on left)
+Ctrl-K-U		Unindent the block
+Ctrl-K-E		Change block to UPPERCASE
+Ctrl-K-L		Change block to lowercase
+Ctrl-K-F		Flip block case
+Ctrl-K-R		Read a block from disk
+Ctrl-K-W		Write a block to disk
+
+
+	-- Other Commands --
+
+	Although these commands have a Ctrl-K  prefix,  they  aren't  block
+handling commands, and they are:
+
+Ctrl-K-Q or Ctrl-K-X	Quit MPW;
+Ctrl-K-D		Save text and quit;
+Ctrl-K-S		Save text, but always shows the saving window.
+
+
+	-- Reading Files and Viewing the Directory --
+
+	In the MPW, we use F6 to see the disk directory, F3 to read a  file
+and Ctrl-K-R to read a block from disk. When we do any of these  operations
+the MPW presents a window that shows the operation to be done and  asks  us
+for a file specification. It is  build  of  an  optional  drive  identifier
+(a letter - A, B, ...) followed by a colon plus the filename, this filename
+may contain wild cards (? and *) and it follows the MSX-DOS standard.
+
+** Examples **	A:*.*		All files from drive A;
+		M*.*		All files from  current  drive  that  start
+				with letter M;
+		B:*.TXT		All files from drive B that  have  the  TXT
+				extension;
+		ZZSOURCE.DOC	The file ZZSOURCE.DOC.
+
+** Note **	If there are invalid characters in the  file  specification
+		or if the specified drive doesn't exist, the  specification
+		won't be accepted.
+
+	If the file specification has no wild cards, the file  in  question
+(in the case of F3 and Ctrl-K-R) will be read from disk. In the	case of dir
+(F6) only that file will be showed, if it exists.
+
+	If the file specification has any wild card, the set  of  files  in
+question will be showed, and in the  dir  case  (F6),  only  the  directory
+pagination will be allowed. In the case of F3 and  Ctrl-K-R  a  select  bar
+will be showed, and the user will be able to move it with the  arrow  keys;
+using Return over a filename will read the desired file from disk since  it
+is an ASCII text.
+
+	The difference between read a file (F3) and read a block (Ctrl-K-R)
+is that in the first case the current text will be COMPLETELY  ERASED,  and
+in the second case the read text is INSERTED in cursor position.
+
+
+	-- Portuguese Accentuation and Internal Conversions --
+
+	The MPW is fully compatible with ASCII texts,  however,  the  ASCII
+standard defines only 128 codes, the other codes, in the MSX, are  used  to
+represent accents, math  symbols  and  other  graphic  characters.  Due  to
+coding needs only the characteres of the Portuguese language are  respected
+by the MPW, the unsupported  characters  are  changed  to  a  question mark
+character.
+
+	Every text, when it is read by the MPW, also due to  coding  needs,
+undergoes "little internal changes" transparents to the user. Due to  these
+changes, the files can decrease their length up to 10% when they  are  read
+and, of course, they come back to their normal length when they are written
+back to disk.
+
+	Some of the MSX faults (at least of ours!), that  is  corrected  by
+the MPW, is that we just can't get the characters ~ and ` by the  keyboard;
+though these characters belong to the standard ASCII table. In the MPW,  if
+an accent  is  typed  twice  the  respective  character  is  obtained,  the
+character ~ (til) for example, is necessary in the  C  language  'cause  it
+represents the boolean operation NOT.
+
+** Note **	If Shakespeare lived today he'd likely say: 2B|~2B !!
+
+
+	-- Writing Texts and Blocks ---
+
+	In the MPW we use Ctrl-K-W  to  write  a  block  to  disk  and  F2,
+Ctrl-K-S or Ctrl-K-D to save a text. The difference among the last three is
+that: Ctrl-K-D saves the text and quits the  program;  Ctrl-K-S  saves  the
+text but always shows the saving window; and F2 also saves but doesn't show
+the saving window whenever possible.
+
+	When we do any of these operations the MPW, if necessary, shows the
+saving window that tells us about the operation to be done and asks us  for
+a file specification; this specification is the same as  the  previous  but
+doesn't allow the use of wild cards (? and *).
+
+	After we provide the file specification, the MPW asks us if we want
+to replace the tabs by spaces, so, a verification is done and if  the  file
+already exists on disk a save confirmation will be asked.
+
+** Note **	To use Ctrl-K-W there must be a block defined;
+
+
+	-- The Tab --
+
+	The code  9  in  the  ASCII  standard  represents  the  tab,  which
+indicates that the cursor should be moved to the next  tabulation,  in  the
+MPW case, to the next 8 column boundary. The tab can be used to save memory
+since a single tab (9) can represent up to 8 spaces.
+
+	But in many cases, it is necessary  to  change  the  tabs  for  the
+respective number of spaces (to export the text for example). In the MPW it
+can be done by just asking the respective question in the saving window.
+
+
+	-- The Tab Key and the Indent Mode --
+
+	When the MPW is ran you can see an "Indent" in the title line, that
+reminds you that the indent mode is activated, to turn it on or off we  use
+Ctrl-Q-I or Ctrl-Tab.
+
+	When this mode is activated, and the insert mode also does or if we
+are in the text bottom, the next line will be tabulated  with  the  current
+line, that is, the necessary number of  spaces  will  be  inserted  in  the
+beginning of the next line to make it start in the  same  column  that  the
+current does.
+
+** Example **
+
+	In this case the indent mode is activated, <RETURN>
+	you can see that the lines were tabulated. <RETURN>
+	<RETURN>
+	Now the indent mode will be turned off <Ctrl-Q-I> <RETURN>
+as you can see now, this line isn't tabulated <RETURN>
+as the previous ones are.
+
+
+	The indent mode becomes really useful when we're writing "indented"
+programs, that is, written in structured  languages  such  as:  C,  Pascal,
+Dbase, Clipper, and so on...
+
+	Watch the following code and notice that how  it  could  be  easily
+written with the indent mode.
+
+
+FUNCTION  READ_DIR (FILESPEC)
+
+   FILELIST = ""
+   FILECOUNT = 0
+   IF EMPTY (FILESPEC)
+      FILESPEC = "*.*"
+   ENDIF
+   ARQ = FINDFIRST (FILESPEC)
+   IF EMPTY (ARQ)
+      RETURN .F.
+   ENDIF
+   DO WHILE !EMPTY (ARQ)
+      FILECOUNT++
+      AADD (FILELIST,ARQ)
+      ARQ = FINDNEXT (FILESPEC)
+   ENDDO
+   RETURN .T.
+
+
+** Note **	The tab key, normally, only inserts the tab code (9) in the
+		text, however, with the indent mode activated, the tab  key
+		tabulates the cursor with the previous line.
+
+
+	-- The Disk Errors --
+
+	Unfortunately, the MSX-DOS doesn't provide an efficient support for
+disk access, mainly if we consider the errors handling. Most programs  that
+run under the MSX-DOS environment also don't  provide  any  kind  of  error
+handling procedure, so, when an error occurs, the programs usually crash or
+"come back" to the system.
+
+	The MPW, due to the techniques discovered  with  the  hacking,  can
+handle the errors in an efficient manner. When a disk error occurs,  it  is
+shown in the title line or in the last given command window; and  then  the
+MPW waits for a key press.
+
+	The possible errors are:
+
+	<< Drive not ready >>	It happens when we try to access  the  disk
+	drive and it is opened, turned off or without a disk;
+
+	<< Disk write proctected >>   It  happens  when  we  try  to  write
+	something to disk, and it is with the protection tab;
+
+	<< Disk I/O error >>   It happens when there's a reading or writing
+	error in the disk;
+
+	<< Too many files >>   It  happens  during   saving   process   and
+	indicates that file limit per directory is already reached;
+
+	<< Disk full >>   It happens during saving  process  and  indicates
+	that there's no enough space in the disk for more data.
+
+
+** Note **	In the MPW, the message: "Insert disk for  drive  x..."  is
+		showed in the title line.
+
+
+	-- Help On-line --
+
+	The MPW has a help window that can be accessed  at  any  time  with
+<F1>. It shows a summary of all commands explained here, the help  is  self
+explanatory.
+
+
+	-- The Split Mode --
+
+	Split mode is the name of the feature which allows the editing  and
+viewing of two texts simultaneously. We use <F8> to turn it on or  off  and
+<F9> to swap between texts.
+
+	When the split mode becomes active, the screen is divided to  allow
+the simultaneous view of both texts. At this moment, if we use <F9> we will
+be able to go from one text to another without de-activate the split  mode,
+that is, the screen will remain divided.
+
+	Notice that, if in the last example, we had used <F8>  rather  than
+<F9> the split mode would have  been  de-activated,  that  is,  the  screen
+would have came back to "normal".
+
+** Example **	When the MPW is ran with only a disk drive,  the  available
+		memory is about 48K for the main text, and 48K more for the
+		second text (split), that is, we have twice  the  available
+		memory but it is equally shared between the two texts.
+
+	Important!! Note that the clipboard is the same for the two  texts,
+	so, it can be used to exchange data between the texts.
+
+
+	-- The Preferences Window --
+
+	The preferences window, is an internal set up which enables  us  to
+change some of MPW characteristics while it is running, this window can  be
+activated, at any time, with <F5>.
+
+	Once in the preferences window, we can see a pull-down menu with 12
+options. To select an option we should use  the  arrow  keys  to  move  the
+select bar over the desired option, and then hit <Return>
+
+	The existing options are described bellow:
+
+- Text, paper, border and  title  color:  They  modify  the  color  of  the
+  respective areas; the arrow keys increase / decrease the color value; the
+  color value ranges from 0 to 511; to finish the modification use <Return>
+  or <Esc>;
+
+- Screen adjust: It is similar to BASIC's  set  adjust  command;  with  the
+  arrow keys we can move the screen to the desired direction; the values of
+  x and y range from -7  to  +8;  the  default  is  0,  0;  to  finish  the
+  modification use <Return> or <Esc>;
+
+- PAL mode: This feature is like AMIGA's PAL BOOTER, and it was  discovered
+  by accident, it keys the video  signal  from  NTSC  (American)  to  PAL-G
+  (European);
+
+** Note **	In some TV sets, when the PAL mode is activated  the  image
+		seems to "run"; to fix it  you  must  adjust  the  vertical
+		synchronism;
+
+- Interlace: It turns the interlace mode on or off; in some TV  sets,  with
+  some color combinations, the interlace activated may make the  text  more
+  visible;
+
+- Key click: It turns the keyboard click sound on or off;
+
+- Use and Cancel: After modify the previous options, we use  these  options
+  to use or to cancel the modifications done.
+
+- Save to disk: You must use this option when you want to  use  permanently
+  the choosen options; a config file, MPW.INF, will be created on  disk  to
+  keep the data about these options. So, while this file  exists,  the  MPW
+  will be loaded with the same options;
+
+- Default: This option reset all the others to their default.
+
+** Extra Information **		You must not be used to the color range  of
+				the MPW (0-511), it happens because the MPW
+uses all the 512 colors of the MSX2 even in text mode. To  adjust  a  color
+based in its RGB, use the following formula: R * 64 + G * 8 + B.
+
+
+	-- Find & Replace Commands --
+
+	One of the most elaborated features of the MPW  are  the  find  and
+replace commands, in the MPW, we use Ctrl-Q-F to  just  find,  Ctrl-Q-A  to
+find and replace, and Ctrl-L to continue a find & replace command.
+
+	When we use Ctrl-Q-A or Ctrl-Q-F  the  find  &  replace  window  is
+showed, in it we can see 3 fields to be filled. The first field asks us for
+the object of our search, that is, what will be searched in the   text,  if
+this field stays empty no action will be taken.
+
+	The second field asks us for the string that will replace the first
+(if it is found), that is, for what we want to change  what  we're  looking
+for. If we just want to find something, this field must stay empty,  notice
+that, it's here that we make the difference between find only  and  find  &
+replace, it must stay well understood for the perfect understanding of  the
+following information.
+
+	The third field ask us for the search options, if this field  stays
+empty the default options will be used. Bellow we  can  see  the  available
+options, to activate these options we should type  the  highlighted  letter
+of each option. Notice that we can even use all the  options  at  the  same
+time, and that the options' respective letters can be typed in any order.
+
+** Note **	Note that the tab character is showed as a  space,  but the
+		MPW recognize it as tab. It was  done  due  to  the  screen
+		available space.
+
+	In the  MPW,  there  are  two  distinct  situations  that  must  be
+considered: find only, that occurs when we leave  the  second  field  empty
+- and find & replace, that occurs when we fill the first and second fields.
+I'm telling it again for two reasons: first, because some options work in a
+different manner in the two cases above - and because I know that this text
+isn't well written (I'm afraid you don't  understand  what  I'm  trying  to
+say).
+
+
+	-- The Options for Find Only --
+
+	If options field stays empty, the string of the first field will be
+searched through text, as it was written (case sensitive search), from  the
+cursor position on. If the desired text  can't  be  found,  the  respective
+message will be showed; otherwise, the search will stop and the cursor will
+stay over the first character of the string found.  By using Ctrl-L at this
+moment will continue the search, that is, we can search next occurrence  of
+the string. Notice that,  the  search  always  continues  from  the  cursor
+position on.
+
+	If we use the global option (G), we will  be  telling  the  MPW  to
+search from the beginning of the text, down. But the Ctrl-L works  as  said
+above.
+
+	If there's a block defined and we use the  local  option  (L),  the
+search will be done ONLY INSIDE THE BLOCK.  The  Ctrl-L  works  as  before,
+inside and out of the block.
+
+	Futhermore, we can use the  upper  option  (U),  that  indicates  a
+non-case sensitive search, or be, the text will be found  independently  of
+its form. (lowercase or uppercase).
+
+
+	-- The Options For Find & Replace --
+
+	If the options field stays empty, the string  of  the  first  field
+will be searched through text, as it was written, from the cursor  position
+on and, if it is not found, the respective message will be shown. Otherwise
+the string found will be replaced by the second field string. Ctrl-L can be
+used now to replace the next string in the text.
+
+	If we use the global option (G), we will  be  telling  the  MPW  to
+search from the beginning of the text as well as  to  replace  all  strings
+found. If the N option  is  also  specified,  all  strings  found  will  be
+replaced automaticaly, otherwise the MPW will ask if you  want  to  replace
+each string found. So, we can choose which strings we want to  replace  and
+which not.
+
+	The find & replace process can be interrupted by pressing <Esc>  or
+<Stop>, at the end of it the MPW shows the number of replaced strings.  The
+Ctrl-L can be used to continue the search with the initial parameters.
+
+	As said before, by using the local option (L), the search  will  be
+done only inside of a defined block. The uppercase option (U) will work  as
+expected.
+
+** Note **	Remember that we can combine the  options  explained  above
+		to, for example, replace all the  strings  inside  a  block
+		automaticaly.
+
+
+	-- Line Handling Commands --
+
+Backspace		or Ctrl-H	Erase character on left
+Delete			or Ctrl-G	Erase character under cursor
+Ctrl-Backspace				Erase word on left
+Ctrl-Delete		or Ctrl-T	Erase word on right
+Ctrl-Y					Erase line
+Ctrl-Q-Y				Erase to the end of line
+Ctrl-K-Y				Erase the block
+Ctrl-N					Insert line
+Ctrl-J					Join lines
+
+
+	-- Function Keys --
+
+	Bellow we can see the definitions given to the function keys in the
+MPW.
+
+ F1  Help		Show the MPW's help window;
+ F2  Save file		Save the text to disk;
+ F3  New file		Load a new file from disk;
+ F4  Import			--
+ F5  Preferences	Select preferences;
+ F6  Dir		Show the disk directory;
+ F7  Shell			--
+ F8  Split		Turn split mode on or off;
+ F9  Swap		Swap between the texts;
+F10  Quit		Quit to the system.
+
+
+	-- Extra Commands --
+
+	The following is a list of the  MPW  extra  commands.  I  like  the
+Ctrl-Q-N, that's very useful when we want to go to a specific line.
+
+Ctrl-Q-N				Go to line N;
+Ctrl-K-D				Save text & quit;
+Ctrl-K-S		or F2		Save text w.o./quit;
+Ctrl-K-Q		or Ctrl-K-X	Quit program;
+Tab			or Ctrl-I	Go to next tab;
+Ctrl-Tab		or Ctrl-Q-I	Toggle indent mode;
+Insert			or Ctrl-V	Toggle insert mode;
+Shift-Insert				Copy clipboard to text.
+
+
+	Well, I hope this klugde of documentation  is  enough  to  get  you
+going - hmmm, better give you some gotcha's I've discovered...
+
+			-- WATCH FOR --
+
+-	The MPW can become slow when we're editing a big text,  it  happens
+	due to its memory handling routines (it's gonna be improved  soon),
+	if it happens, copy the part of text you're editing to  the  second
+	text, and after edit it, copy it back into the main text;
+
+-	When you're reading PC files, notice that some  characters  can  be
+	inserted at the end of text, it may happen because some PC  editors
+	don't put the Ctrl-Z (#1a) at the end of the text;
+
+- 	MPW isn't perfect,  it  has  some  bugs  that  you'll  discover  by
+	yourself, but it is nothing that prevents you from using it.
+
+-	MPW is relatively complete, but  there's  always  another  day  and
+	another MAC...	
+
+
+	SO... Here's my "wish list"
+
+	..it might save you telling me YOU  think  such-and-such  would  be
+	nice...
+
+-	MPW will be oriented by pull-down menus, like the  AMIGA  programs;
+	the edit windows will be adjustable (size and position) like AMIGA!
+
+-	MPW will have a right margin, page breaks and must justify the text
+
+-	Find & replace window will be modified to get more friendly;
+
+-	Import will be added to the program;
+
+-	Tab size will be adjustable;
+
+-	Printing routine will work it should does;
+
+-	The clipboard and block handling will be improved to  allow  better
+	edit capacibles.
+
+
+	-- The Author, MAC --
+
+	I want to thank the following people:
+
+Andr‚ Pinheiro			for his PC computer and some ideas;
+Andr‚ Tupinamb 			for his ideas;
+Eduardo Dias, Pai DUDU		for his ideas, his AMIGA, and spiritual
+				support;
+J£lio Marchi			for his assembly routines and ideas;
+Miguel Freitas			for his assembly routines and ideas;
+Ricardo -from TECNOBYTES	for his support, ideas and encouragement
+Rog‚rio -from TECNOBYTES	for his support, ideas and CD's
+Rog‚rio -from COBRA SOFT	for his support, and encouragement
+Ronald Arsolino			for his AMIGA computer!!
+
+	I also want to thank: Information Society, Depeche Mode, New Order,
+	2 Unlimited, Culture Beat and Sunscream for their inspiration. by MAC.
+

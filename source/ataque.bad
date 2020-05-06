@@ -1,0 +1,158 @@
+declare misseis, score, recorde
+declare temp, tecla
+declare posx, posy, posx1, posy1, posx2, posx3, delta, delta1
+declare tentativas, bombas, ejeta, controle
+declare csprite, bsprite
+
+
+{ataque}
+        [prepara_fonte]:
+        misseis%=3:
+        color 15,5,5:
+        screen 2,2:
+        gosub {carrega_fonte}:
+        open "grp:" for output as #1:
+        gosub {psprites}
+
+{reinicia}
+        cls:
+        gosub {apresentacao}:
+        score=recorde:
+        posx3=168:
+        gosub {placar}:
+        score=0:
+        posx3=64:
+        gosub {placar}:
+        delta=8:
+        delta1=4:
+        posx=240:
+        posx2=0:
+        posy1=209
+
+{chance}
+        for temp%=4 to 7:
+                put sprite temp%,(84+temp%*8,8),13,temp%:
+        next temp%:
+        bombas=4:
+        tentativas=0:
+        on sprite gosub {csprite}
+
+{loop}
+        sprite on:
+        if posx=0 then delta=-8:
+                sprite$(1)=csprite$
+        if posx<>240 then {controle}
+
+        if controle=14 then controle=1:
+                bombas=bombas-1:
+                put sprite bombas+4,(52+bombas*8,8),0:
+                if bombas=-1 then {gameover}
+        if ejeta=0 then delta=8:
+                sprite$(1)=bsprite$
+        if stick(0)<>1 then ejeta=1:
+                goto {posicao}
+        ejeta=0
+
+{controle}
+        posx=posx-delta
+
+{posicao}
+        put sprite 1,(posx,62),controle,1:
+        if stick(0)=5 and controle=1 then controle=14:
+                posx1=posx:
+                posy1=62:
+                play "o2l10b"
+        if point(posx1,posy1)=5 then posy1=posy1+8 _
+        else posy1=209
+        put sprite 2,(posx1,posy1),13,2:
+        posx2=posx2+delta1:
+        put sprite 3,(posx2,170),14,3:
+        goto {loop}
+
+{csprite}
+        sprite off:
+        play "o1l20c":
+        if delta1=-4 then posx2=0:
+                delta1=4 _
+        else posx2=256:
+                delta1=-4
+        posy1=209:
+        put sprite 2,(posx1,posy1),,2:
+        score+=1:
+        tentativas+=1:
+        gosub {placar}:
+        return
+
+{gameover}
+        put sprite 1,(255,208),,1:
+        if tentativas=>misseis% then {chance}
+        if recorde<score then recorde=score:
+                posx3=168:
+                gosub {placar}
+        color 15:
+        fstring$="Novo Jogo? <S/N>":
+        pset(fncx(fstring$),80),12:
+        print #1,fstring$:
+        tecla$=inkey$:if tecla$="" then {@}
+        if tecla$="s" or tecla$="S" then {reinicia}
+        if tecla$="n" or tecla$="N" then run "program.bas"
+        goto {gameover}
+
+{apresentacao}
+        color 11:
+        pset(0,180):
+        draw "m255,180":
+        paint(100,181):
+        for temp%=1 to 255 step 4:
+                pset(temp%,179):
+                pset(temp%+1,179):
+        next temp%:
+        color 15:
+        pset(255,160)
+        draw "m140,160m190,120m200,120m216,70m255,70":
+        paint(255,159):
+        circle(100,32),40,15,,,.2:
+        paint(100,32):
+        circle(100,40),30,15,,,.2:
+        paint(100,40):
+        return
+
+{psprites}
+        restore {dsprites}:
+        for temp%=1 to 80:
+                read delta:
+                temp$=temp$+chr$(delta):
+        next temp%:
+        bsprite$=left$(temp$,24):
+        csprite$=mid$(temp$,25,24):
+        sprite$(1)=bsprite$:
+        for temp%=1 to 12:
+                sprite$(temp%)=mid$(temp$,49,8):
+        next temp%:
+        sprite$(3)=mid$(temp$,57,24):
+        e1=0:
+        controle=1:
+        return
+
+{dsprites}
+        data 0,0,0,12,63,255,31,0, _
+             0,0,0,0,0,0,0,0, _
+             1,3,15,63,255,255,252,0, _
+             128,192,240,252,255,255,63,0
+        data 0,0,0,0,0,0,0,0, _
+             0,0,0,48,252,255,248,0, _
+             60,126,60,0,0,0,0,0, _
+             0,0,3,15,3,255,127,63
+        data 0,0,0,0,0,0,0,0, _
+             0,0,192,240,192,255,254,252
+
+{placar}
+        pset(posx3,8),5:
+        color 5:
+        print #1,string$(4,chr$(200)):
+        pset(posx3,8),5:
+        color 15:
+        print #1,right$(str$(10000+score),4):
+        return
+
+include "fontes.bad"

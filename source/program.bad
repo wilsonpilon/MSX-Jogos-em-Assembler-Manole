@@ -1,0 +1,118 @@
+declare tecla, instrucoes
+declare temp, contador, laco
+declare opcao
+
+define [waitkey] [a$=inkey$:if a$="" then {@}]
+
+
+{main}
+    clear 1000,&HC000:
+    dim instrucoes$(11):
+    gosub {inicia}:
+    goto {apresentacao}:
+    goto {encerra}
+{encerra}
+    screen 0:
+    print "MSX BASIC":
+    end
+
+{inicia}
+    cls:
+    key off:
+    screen 0:
+    color 15,1,1:
+    width 40
+    'on error goto {erro}
+    on stop gosub {encerra}:
+    stop on:
+    return
+
+{apresentacao}
+    include "menu.bad"
+    goto {apresentacao}
+
+{intro}
+    for temp=0 to 11:
+        instrucoes$(temp)="":
+    next temp
+    temp=usr(1):
+    gosub {janelaComum}:
+    janx=5:
+    jany=4:
+    janw=30:
+    janh=14:
+    gosub {janela}:
+    on opcaocorrente gosub {ifinaliza},{iataque},{ibase},{icombate},{igalerias}
+    [waitkey]
+    temp=usr(2):
+    return
+
+{textointro}
+    for temp=0 to 11:
+        locate janx+1,jany+temp+1:
+        print instrucoes$(temp):
+    next temp:
+    return
+
+{ifinaliza}
+    instrucoes$(0)="Encerra o programa e volta"
+    instrucoes$(1)="para o BASIC"
+    gosub {textointro}
+    return
+
+{iataque}
+    instrucoes$(0)="Destrua os tanques com auxi-"
+    instrucoes$(1)="lio do bombardeiro."
+    instrucoes$(2)="Inicia com 5 bombas, porem"
+    instrucoes$(3)="transsporta 1 por vez."
+    instrucoes$(4)=chr$(&HA7)+" Decola"
+    instrucoes$(5)=chr$(&HA7)+" Lanca Bomba"
+    instrucoes$(6)="A cada 3 tanques destruidos"
+    instrucoes$(7)="dos ganha 5 bombas adicio-"
+    instrucoes$(8)="nais."
+    gosub {textointro}
+    return
+
+{ibase}
+    instrucoes$(0)="Controle a capsula espacial"
+    instrucoes$(1)="atraves dos meteoritos para"
+    instrucoes$(2)="alunizar."
+    instrucoes$(4)="No centro temos o numero de"
+    instrucoes$(5)="pontos a serem obtidos."
+    instrucoes$(7)="Setas "+chr$(&HA5)+" e "+chr$(&HA6)+" manobram o "
+    instrucoes$(8)="aparelho na horizontal."
+    instrucoes$(9)="Seta "+chr$(&HA7)+" faz subir"
+    gosub {textointro}
+    return
+
+{icombate}
+    instrucoes$(0)="Controle a capsula espacial"
+    instrucoes$(1)="Atire em avioes, navios e"
+    instrucoes$(2)="submarinos. Inicialmente tem"
+    instrucoes$(3)="90s mas ganha 15s ao destru-"
+    instrucoes$(4)="ir todos alvos."
+    instrucoes$(5)="Jogo acaba ao final do tempo"
+    instrucoes$(6)="ou quando tiro acerta mina."
+    instrucoes$(7)="   submarino=1 ponto"
+    instrucoes$(8)="   navio=2 pontos"
+    instrucoes$(9)="   aviao=3 pontos"
+    instrucoes$(10)="Setas "+chr$(&HA5)+" e "+chr$(&HA6)+" manobram base"
+    instrucoes$(11)="Seta "+chr$(&HA7)+" atira"
+    gosub {textointro}
+    return
+
+{igalerias}
+    instrucoes$(0)="90 segungos para atravessar"
+    instrucoes$(1)="10 galerias com o submarino."
+    instrucoes$(2)="Conseguindo, voce tem mais"
+    instrucoes$(3)="90 segundos para mais 10"
+    instrucoes$(4)="galerias mais estreitas."
+    instrucoes$(6)="  Setas "+chr$(&HA7)+" e "+chr$(&HA8)+" manobram sub-"
+    instrucoes$(7)="  marino"
+    instrucoes$(9)="O proprio peso faz o sub-"
+    instrucoes$(10)="marino descer"
+    gosub {textointro}
+    return
+
+include "erro.bad"
+

@@ -1,0 +1,192 @@
+declare contador, temp, tecla
+declare recorde, score
+declare spr1, spr2, posicaox, posicaoy, posicaox1, posicaoy1
+
+{combate}
+    [prepara_fonte]:
+    gosub {carrega_fonte}:
+    color 10,1,1:
+    screen 1,2:
+    width 32:
+    key off:
+    z=rnd(-time):
+    recorde=0:
+    score=0:
+    spr1$="":
+    spr2$="":
+    gosub {carrega_sprites}
+    gosub {fundo}
+
+{novo_jogo}
+    te=41
+{continua}
+    gosub {placar}:
+    gosub {define_sprites}
+    nb=0:
+    te=te+16:if te>99 then te=99
+    gosub {posiciona_sprites}:
+    posicaox%=120:
+    posicaoy1%=209:
+    co=1:
+    t1=1:
+    on sprite gosub {acerto}
+
+{controle}
+    sprite on:
+    temp=stick(0):
+    if temp=7 and posicaox%>88 then posicaox%=posicaox%-8
+    if temp=3 and posicaox%<152 then posicaox%=posicaox%+8
+    if temp=1 and posicaoy1%=209 then co=0:
+        posicaoy1%=176:
+        posicaox1%=posicaox%
+    if co=0 then posicaoy1%=posicaoy1%-8
+    if posicaoy1%=16 then posicaoy1%=209:
+        co=1
+    t1=t1-1:
+    if t1=0 then te=te-1:
+        t1=18:
+        if te=-1 then {game_over}
+    locate 14,1:
+    print te:
+    put sprite 1,(posicaox%,176),10,1:
+    put sprite 2,(posicaox1%,posicaoy1%),1,2:
+    temp=usr3(1):
+    goto {controle}
+    a$=input$(1):end
+
+{acerto}
+    sprite off:
+    if posicaoy1%>145 then return
+    c=2:
+    cz=18:
+    z=usr3(2):
+    play "o1l10c":
+    for contador=&HA000 to &HA01D step 2:
+        c=c+1:
+        if abs(posicaox1%-peek(contador+1))<16 and abs(posicaoy1%-peek(contador))<16 then cz=c
+    next contador:
+    if cz<12 then sprite$(cz)="":
+        put sprite 2,(posicaox1%,209),,2:posicaoy1%=209:
+        co=1:
+        score=score-3*(cz<6)-2*(cz>5 and cz<9)-(cz>8):
+        gosub {placar}:
+        nb+=1:
+        if nb=9 then play "o5l30cdeededc":
+            goto {continua} else return
+
+{game_over}
+    for contador%=0 to 40:
+        c=c+1:
+        if c>15 then c=0
+        color ,c,c:
+    next contador%:
+    color 7,5,4:
+    vpoke 8219,80:
+    vpoke 8218,208:
+    if recorde<score then recorde=score:
+        gosub {placar}
+    score=0:
+    locate 8,7:
+    print "Novo Jogo? <S/N>"
+{sim_nao}
+    tecla$=inkey$
+    if tecla$="S" or tecla$="s" then locate 8,7:
+        print space$(18):
+        goto {novo_jogo}
+    if tecla$="N" or tecla$="n" then run "program.bas"
+    goto {sim_nao}
+
+{fundo}
+    cls:
+    color 7,5,4:
+    vpoke 8219,80:
+    vpoke 8218,208:
+    locate 0,8:
+    for contador%=1 to 511:
+        if contador%<460 or (contador%>469 and contador%<492) or contador%>501 then temp%=214 else temp%=215
+        if contador%<33 then temp%=216
+        print chr$(temp%);
+    next contador%:
+    vpoke 6911,214:
+    return
+
+{placar}
+    locate 7,1:
+    print right$(str$(10000+score),4):
+    locate 21,1:
+    print right$(str$(10000+recorde),4):
+    return
+
+{posiciona_sprites}
+    restore {data_posicoes}:
+    put sprite 2,(200,208),,2:
+    for posicaoy%=0 to 4:
+        read temp%:
+        for posicaox%=0 to 2:
+            put sprite 3+posicaox%+posicaoy%*3,(posicaox%*85+rnd(1)*40,posicaoy%*24+40),temp%,3+posicaox%++posicaoy%*3:
+        next posicaox%:
+    next posicaoy%:
+    return
+
+{define_sprites}
+    for contador%=12 to 17:
+        sprite$(contador%)=left$(spr1$,32):
+    next contador%:
+    for contador%=9 to 11:
+        sprite$(contador%)=mid$(spr1$,33,24):
+    next contador%:
+    for contador%=3 to 5:
+        sprite$(contador%)=mid$(spr1$,57,24):
+    next contador%
+    for contador%=6 to 8:
+        sprite$(contador%)=left$(spr2$,24):
+    next contador%:
+    sprite$(2)=mid$(spr2$,25,8):
+    sprite$(1)=mid$(spr2$,33,32):
+    return
+
+
+{carrega_sprites}
+    restore {data_sprites}:
+    for contador%=1 to 80:
+        read temp%:
+        spr1$=spr1$+chr$(temp%):
+    next contador%:
+    for contador%=1 to 64:
+        read temp%:
+        spr2$=spr2$+chr$(temp%):
+    next contador%:
+    for contador%=0 to 23:
+        read temp%:
+        vpoke 1712+contador%,temp%:
+    next contador%:
+    return
+
+{data_sprites}
+    data 1,33,119,63,31,63,63,254, _
+         254,63,63,31,63,119,33,1, _
+         128,132,238,252,248,252,252,127, _
+         127,252,252,248,252,238,132,128, _
+         0,1,1,31,191,255,191,31, _
+         0,0,0,0,0,0,0,0, _
+         0,224,224,254,255,255,255,254
+    data 0,192,224,255,255,255,199,15 , _
+         0,0,0,0,0,0,0,0 , _
+         0,0,120,254,255,254,224,248 , _
+         0,0,7,15,255,255,127,63 , _
+         0,0,0,0,0,0,0,0 , _
+         0,0,224,224,255,255,254,252 , _
+         1,1,1,1,1,1,1,1
+    data 3,7,7,7,7,7,19,55 , _
+         63,127,127,63,55,19,0,0 , _
+         192,224,224,224,224,224,200,236, _
+         252,254,254,252,236,200,0,0, _
+         0,0,0,0,0,0,0,0 , _
+         255,255,255,255,255,255,255,255 , _
+         255,255,255,255,255,223,207,135
+
+{data_posicoes}
+    data 3,15,14,1,1
+
+include "fontes.bad"
+

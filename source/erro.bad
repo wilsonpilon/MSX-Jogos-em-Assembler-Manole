@@ -1,0 +1,11 @@
+{erro}
+    if err=10 then _
+        erase opcoes:
+        erase opcoes$:
+        dim opcoes(opcaototal),opcoes$(opcaototal):
+        resume next
+    print "erro:" err:
+    print "linha:" erl:
+    error err:
+    clear:
+    goto {encerra}

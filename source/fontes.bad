@@ -1,0 +1,62 @@
+define [prepara_fonte] [clear2000,&HCBFF]
+
+declare fstring
+
+{carrega_fonte}
+        bload"program.alf",&H3A00:
+        poke &hf91f,peek(&hf341+3):
+        poke &hf920,&H00:
+        poke &hf921,&hCC:
+        def fncx(fstring$)=128-4*len(fstring$):
+        def fnct(fstring$)=15-len(fstring$)/2:
+	return
+
+{exemplo_sc2}
+        screen 2:
+        open "grp:" as #1:
+        color 15,12,4:
+        cls
+        color 15:
+        fstring$="Usando FONTE Graphos":
+        pset(fncx(fstring$),64),12:
+        print #1,fstring$
+        color 7:
+        fstring$="na SCREEN 2":
+        pset(fncx(fstring$),80),12:
+        print #1,fstring$
+        color 10:
+        fstring$="Fonte em &HCC00":
+        pset(fncx(fstring$),96),12:
+        print #1,fstring$
+        color 3:
+        fstring$="Pressione Espaco":
+        pset(fncx(fstring$),160),12:
+        print #1,fstring$
+        for i=0to1:
+                i=-strig(0):
+        next
+        return
+
+{exemplo_sc1}
+        screen 1:
+        color 15,12,4:
+        width 30:
+        fstring$="Usando FONTE Graphos":
+        locate fnct(fstring$),6:
+        print fstring$:
+        fstring$="na SCREEN1":
+        locate fnct(fstring$),8:
+        print fstring$
+        fstring$="Fonte em &HCC00":
+        locate fnct(fstring$),10:
+        print fstring$:
+        for i=0 to 1:
+                i=-strig(0):
+        next:
+        return
+
+{volta_fonte}
+        poke &hf91f,peek(&hfcc1):
+        poke &hf920,peek(4):
+        poke &hf921,peek(5):
+        return

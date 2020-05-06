@@ -1,0 +1,298 @@
+declare cursor, maximo, posicao, opcaocorrente
+declare opcoes, executa, opcaototal, negrito, topo
+declare blkx, blky, blkw, blkh, blkc
+declare janx, jany, janw, janh
+declare cVazio, cBranco, cPreto
+declare cCantoSuperiorDireito, cBarraSuperior, cCantoSuperiorEsquerdo, cJuncaoSuperior
+declare cCantoInferiorDireito, cBarraInferior, cCantoInferiorEsquerdo, cJuncaoInferior
+declare cLateralEsquerda, cLateralDireita, cJuncaoDireita, cJuncaoEsquerda
+declare cJuncao
+
+{menu}
+    cls:
+    deffnvr(col,lin)=col+lin*40:
+    bload "menu.alf",s,-&HA00:
+    maximo=12:
+    topo=1:
+    opcaocorrente=1:
+    blkx=&HD500:
+    blky=&HD501:
+    blkw=&HD502:
+    blkh=&HD503:
+    blkc=&HD504:
+    gosub {dimensiona}:
+    gosub {carregamenu}:
+    gosub {desktop}:
+    gosub {mostra}:
+    cursor=1:
+    posicao=0:
+    gosub {seleciona}:
+    goto {encerra}:
+    goto {menu}
+
+{dimensiona}
+    restore {data_opcoes}:
+    opcaototal=0
+{lopdim}
+    read temp$:
+    if temp$ <> "@" then _
+        opcaototal+=1:
+        goto {lopdim}
+    dim opcoes$(opcaototal):
+    dim executa$(opcaototal):
+    return
+
+
+{carregamenu}
+    restore {data_opcoes}:
+    for temp=1 to opcaototal:
+        read opcoes$(temp):
+        opcoes$(temp)=left$(opcoes$(temp)+space$(16),16):
+    next:
+    restore {data_executa}:
+    for temp=1 to opcaototal:
+        read executa$(temp):
+        executa$(temp)=executa$(temp)+".bas":
+    next:
+    return
+
+{caracteres}
+    locate 1,0:
+    for f=0 to 15:
+        print hex$(f);:
+    next f:
+    locate 0,1:
+    for f=0 to 15:
+        print hex$(f):
+    next f:
+    for g=0 to 15:
+        for f=0 to 15:
+            vpoke f+1+(g+1)*40,f+g*16:
+        next f:
+    next g:
+    tecla$=input$(1):
+    if tecla$="q" or tecla$= "Q" then end _
+    else if tecla$="g" or tecla$="G" then run "graphos.bas" _
+    else clear:goto {menu}
+    return
+
+
+{desktop}
+    poke blkx,0:
+    poke blky,0:
+    poke blkw,40:
+    poke blkh,24:
+    poke blkc,&H80:
+    temp=usr(0):
+
+    poke blkx,0:
+    poke blky,0:
+    poke blkw,40:
+    poke blkh,1:
+    poke blkc,&H9E:
+    temp=usr(0):
+
+    poke blkx,0:
+    poke blky,23:
+    temp=usr(0)
+    temp$=chr$(&H9F)+" "+chr$(&H8B)+chr$(&H8C)+chr$(&H8D)+chr$(&H8E)+" Jogos em Assembler "+chr$(&H9F):
+    poke blkx,2:
+    poke blky,0:
+    temp$=usr1(temp$):
+    gosub {janelaComum}:
+    janx=2:
+    jany=2:
+    janw=20:
+    janh=14:
+    gosub {janela}:
+    gosub {janelaComum}:
+    janx=23:
+    jany=2:
+    janw=15:
+    janh=7:
+    gosub {janela}
+    poke blkx,25:
+    poke blky,3:
+    temp$=chr$(&HA9)+" - Info":
+    temp$=usr1(temp$):
+    poke blkx,25:
+    poke blky,4:
+    temp$=chr$(&HAA)+" - ":
+    temp$=usr1(temp$):
+    poke blkx,25:
+    poke blky,5:
+    temp$=chr$(&HAB)+" - ":
+    temp$=usr1(temp$)
+    poke blkx,25:
+    poke blky,6:
+    temp$=chr$(&HAC)+" - ":
+    temp$=usr1(temp$):
+    poke blkx,25:
+    poke blky,7:
+    temp$=chr$(&HAD)+" - ":
+    temp$=usr1(temp$):
+    return
+
+
+{janela}
+    poke blkx,janx+1:
+    poke blky,jany:
+    poke blkw,janw-2:
+    poke blkh,1:
+    poke blkc,cBarraSuperior:
+    temp=usr(0):
+    vpoke janx+jany*40,cCantoSuperiorEsquerdo:
+    vpoke janx+janw-1+jany*40,cCantoSuperiorDireito:
+
+    poke blkx,janx+1:
+    poke blky,jany+1:
+    poke blkw,janw-2:
+    poke blkh,janh-2:
+    poke blkc,cVazio:
+    temp=usr(0)
+
+    for laco=jany+1 to jany+janh-2:
+        vpoke janx+laco*40,cLateralEsquerda:
+        vpoke janx+janw-1+laco*40,cLateralDireita:
+    next:
+
+    vpoke janx+(jany+janh-1)*40,cCantoInferiorEsquerdo:
+
+    poke blkx,janx+1:
+    poke blky,jany+janh-1:
+    poke blkw,janw-2:
+    poke blkh,1:
+    poke blkc,cBarraInferior:
+    temp=usr(0):
+    vpoke janx+janw-1+(jany+janh-1)*40,cCantoInferiorDireito:
+
+    return
+
+{mostra}
+    for temp%=topo to topo+maximo-1:
+        poke blkx,4:
+        poke blky,3+temp%-topo:
+        temp$=usr1(opcoes$(temp%))
+    next:
+    return
+
+{seleciona}
+    gosub {mostra_selecao}:
+    tecla$=inkey$:
+    if tecla$<>"" then {@}
+    tecla$=inkey$:
+    if tecla$="" then {@}
+    gosub {desmarca}
+    if asc(tecla$)=31 then cursor+=1:
+        opcaocorrente+=1:
+    if opcaocorrente>opcaototal then opcaocorrente=opcaototal
+    if cursor>maximo then cursor=maximo:topo=opcaocorrente-maximo+1:gosub {mostra}
+    if asc(tecla$)=30 then cursor-=1:
+        opcaocorrente-=1
+    if opcaocorrente<1 then opcaocorrente=1
+    if cursor<1 then cursor=1:topo=opcaocorrente:gosub {mostra}
+    if asc(tecla$)=13 then {executa_bas}
+    if asc(tecla$)=27 then {encerra}
+    if asc(tecla$)=11 then cls:
+        goto {caracteres}
+    if asc(tecla$)=24 then gosub {intro}
+
+    goto {seleciona}
+
+{mostra_selecao}
+    poke blkx,4:
+    poke blky,2+cursor:
+    temp$=usr2(opcoes$(opcaocorrente)):
+    return
+
+{desmarca}
+    poke blkx,4:
+    poke blky,2+cursor:
+    temp$=usr1(opcoes$(opcaocorrente)):
+    return
+
+{executa_bas}
+    if opcaocorrente=0 goto {encerra}
+    run executa$(opcaocorrente)
+
+{janelaEspecial}
+    cVazio=&H00:
+    cBranco=&H00:
+    cPreto=&HA0:
+    cCantoSuperiorEsquerdo=&H98:
+    cBarraSuperior=&H97:
+    cCantoSuperiorDireito=&H81:
+    cJuncaoSuperior=&HA1:
+    cCantoInferiorDireito=&H85:
+    cBarraInferior=&H84:
+    cCantoInferiorEsquerdo=&H83:
+    cJuncaoInferior=&HA4:
+    cLateralEsquerda=&H82:
+    cLateralDireita=&H9C:
+    cJuncaoDireita=&HA3:
+    cJuncaoEsquerda=&HA2:
+    cJuncao=&H15:
+    return
+
+{janelaComum}
+    cVazio=&H00:
+    cBranco=&H00:
+    cPreto=&HA0:
+    cCantoSuperiorEsquerdo=&H18:
+    cBarraSuperior=&H17:
+    cCantoSuperiorDireito=&H19:
+    cJuncaoSuperior=&H12:
+    cCantoInferiorDireito=&H1B:
+    cBarraInferior=&H17:
+    cCantoInferiorEsquerdo=&H1A:
+    cJuncaoInferior=&H11:
+    cLateralEsquerda=&H16:
+    cLateralDireita=&H16:
+    cJuncaoDireita=&H13:
+    cJuncaoEsquerda=&H14:
+    cJuncao=&H15:
+    return
+
+{data_opcoes}
+    data Finaliza, _
+         Ataque, _
+         Base, _
+         Combate, _
+         Galerias, _
+         Gypsie ,_
+         Formula 1, _
+         Xeros, _
+         Asteroids, _
+         Panico, _
+         Salvamento, _
+         Tanques, _
+         S.O.S., _
+         Cavernas, _
+         Missao, _
+         Slalom, _
+         Labirinto, _
+         Futebol, _
+         Minas, _
+         @
+
+{data_executa}
+    data finaliza, _
+         ataque, _
+         base, _
+         combate, _
+         galerias, _
+         gypsie ,_
+         formula1, _
+         xeros, _
+         asteroid, _
+         panico, _
+         Salvamen, _
+         tanques, _
+         sos, _
+         cavernas, _
+         missao, _
+         slalom, _
+         labirint, _
+         futebol, _
+         minas, _
+         @

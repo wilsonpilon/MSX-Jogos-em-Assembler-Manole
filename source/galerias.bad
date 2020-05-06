@@ -1,0 +1,42 @@
+declare contador, temp, tecla
+
+{galerias}
+    [prepara_fonte]:
+    gosub {carrega_fonte}:
+    color 10,1,1:
+    screen 1,2:
+    width 32:
+    key off:
+    z=rnd(-time):
+    gosub {asm}:
+    gosub {teste}:
+    a$=input$(1):
+    end
+
+
+{teste}
+    locate 27,1:
+    vpoke 6206,nv
+    z=usr9(0):
+    locate 10,10:
+    return
+
+{asm}
+    bload"galerias.bin":
+    defusr9=60000!:
+    poke &HD502,10:
+    return
+    restore {data_asm}:
+    for contador=60000! to 60066!:
+        read temp:
+        poke contador,temp:
+    next contador:
+    return
+{data_asm}
+    data 33,96,24,62,248,1,160,2,205,86,0,33,11,1,229,58,120,230,245
+    data 205,198,0,62,32,205,162,0,44,241,61,254,255,32,240,225,1,0,1,9
+    data 124,254,33,200,237,95,254,64,56,9,44,58,120,230,133,254,24,32
+    data 212,45,125,254,4,32,206,195,145,234
+
+include "fontes.bad"
+
