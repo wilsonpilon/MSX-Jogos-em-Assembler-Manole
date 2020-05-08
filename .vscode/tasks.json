@@ -5,7 +5,7 @@
     "tasks": [
         {
             "label": "make",
-            "command": "make.bat",
+            "command": "makeLin.sh",
             "args": [
                 ""
             ],

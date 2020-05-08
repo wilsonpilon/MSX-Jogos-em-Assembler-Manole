@@ -24,7 +24,7 @@ set COMname=program
 set MakeAutoexec=true
 set MakeDOS=true
 set MakeBAD=true
-set MakeASM=true
+set MakeASM=false
 set MakeALF=false
 set emulPath=C:\retro\msx\openmsx.exe
 set emulArgs=-machine msx1_eu -ext Sharp_HB-3600 -script program.tcl -diskb diskb/
@@ -48,6 +48,7 @@ set Tdos=%Tools%\unix2dos.exe
 set Tunix=%Tools%\dos2unix.exe
 set CopyToFloppy=%disktool% a %Build%\%DiskName%
 set token=%python% %Tools%\msxbadig.py
+set Grep=grep -v removed_line_number
 
 echo %date%-%time%-[definicoes]: Variaveis Locais Configuradas
 
@@ -58,9 +59,9 @@ rem     ASMaux: Lista de arquivos auxiliares Assembly a serem compilados
 rem             e nao incorporados no PROGRAM.BIN
 rem     ALFaux: Lista de arquivos auxiliares de fontes a serem compilados
 rem             e nao incorporados no PROGRAM.BIN
-set BADaux=asteroid ataque base cavernas combate formula1 futebol galerias gypsie labirint minas missao panico salvamen slalom sos tanques xeros
-set BADaux=galerias
-set ASMaux=galerias
+set BADaux=ataque base combate
+set BADaux=
+set ASMaux=
 set ALFaux=
 
 cls
@@ -79,7 +80,7 @@ if [%MakeBAD%] == [true] (
 	echo  %date%-%time%-[auxiliar]: Compilando BAD Auxiliares
 	for %%i in (%BADaux%) do (
 		echo %token% %Source%\%%i.bad
-		%token% %Source%\%%i.bad >> %Source%\error.txt
+		%token% %Source%\%%i.bad | %Tools%\%Grep% >> %Source%\error.txt
 	)
 )
 FOR /F "usebackq" %%A IN ('%Source%/error.txt') DO set e2=%%~zA
